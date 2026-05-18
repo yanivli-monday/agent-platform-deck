@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agent Platform — Roles & Responsibilities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    /* Prototype tokens (mirrored from prototype/src/index.css + globals.css) */
+    --app-shell-gradient: linear-gradient(to bottom, #f6f7fb 0%, #e2e5eb 100%);
+    --canvas: #f6f7fb;
+    --ink: #1e2939;
+    --ink-strong: #323338;
+    --muted: #676879;
+    --muted-soft: #9699a6;
+    --border: #e6e9ef;
+    --border-strong: #d0d4e4;
+    --surface: #ffffff;
+    --soft: #f6f7fb;
+    --chip: #eceff3;
+
+    /* monday brand */
+    --brand: #0073ea;
+    --brand-hover: #0060c0;
+
+    /* Mission-style pastel accents for team color coding */
+    --platform: #C9C9FF;     /* soft indigo — Platform team */
+    --platform-ink: #4a4ad6;
+    --persona: #FFC9FC;      /* soft pink — Persona teams */
+    --persona-ink: #b13ea0;
+    --growth: #FFD8B3;       /* soft peach — Growth team */
+    --growth-ink: #b66821;
+
+    --agent-yellow: #fcd633;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    background-image: var(--app-shell-gradient);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    padding: 40px 56px 56px;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+    max-width: 1280px; margin: 0 auto;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Top bar mimicking monday app top bar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .brand-mark {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 600; color: var(--ink-strong);
+  }
+  .brand-mark .logo {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--ink); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; letter-spacing: -0.5px;
+  }
+  .brand-mark .sep {
+    width: 1px; height: 14px; background: var(--border); margin: 0 4px;
+  }
+  .crumb {
+    color: var(--muted); font-size: 13px; font-weight: 500;
+  }
+  .page-num {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 5px 11px; border-radius: 999px;
+    tabular-nums: 1; font-variant-numeric: tabular-nums;
+  }
+
+  /* Title slide */
+  .title-wrap {
+    display: flex; flex-direction: column;
+    max-width: 880px;
+    margin-top: 12px;
+  }
+  .title-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    width: max-content; margin-bottom: 20px;
+  }
+  .title-tag .agent-square {
+    width: 14px; height: 14px; border-radius: 4px;
+    background: var(--agent-yellow);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  h1.deck-title {
+    font-size: 56px; font-weight: 800; line-height: 1.08;
+    margin: 0 0 18px; color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  h1.deck-title .accent { color: var(--brand); }
+  .deck-sub {
+    font-size: 18px; color: var(--muted); font-weight: 400;
+    max-width: 760px; line-height: 1.55;
+  }
+  .deck-sub strong { color: var(--ink-strong); font-weight: 600; }
+  .meta-row {
+    display: flex; gap: 10px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 7px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 500; color: var(--ink-strong);
+  }
+  .meta-pill .dot {
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+
+  /* Slide titles */
+  .slide-title-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .slide-title-row .pill-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--muted); text-transform: uppercase;
+    background: var(--chip); padding: 4px 10px; border-radius: 6px;
+  }
+  h2.slide-title {
+    font-size: 30px; font-weight: 700; margin: 0;
+    color: var(--ink); letter-spacing: -0.015em;
+  }
+  .slide-sub {
+    font-size: 13.5px; color: var(--muted);
+    margin: 4px 0 16px; max-width: 880px; line-height: 1.5;
+  }
+
+  /* Areas grid (overview slide) */
+  .areas-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    flex: 1; align-content: stretch;
+  }
+  .area-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.02);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .area-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(15,40,80,0.06);
+  }
+  .area-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .area-tile {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--agent-yellow);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink);
+  }
+  .area-tile.t1 { background: #C9C9FF; }
+  .area-tile.t2 { background: #FFC9FC; }
+  .area-tile.t3 { background: #FFD8B3; }
+  .area-num {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    color: var(--muted-soft); text-transform: uppercase;
+  }
+  .area-card h3 {
+    font-size: 17px; font-weight: 700; margin: 0 0 6px; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .area-card p {
+    font-size: 13px; color: var(--muted); line-height: 1.55; margin: 0;
+    flex: 1;
+  }
+  .area-footer {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted-soft); font-weight: 500;
+  }
+
+  /* Two/three column team cards */
+  .cols {
+    display: grid; gap: 14px;
+    flex: 1; min-height: 0;
+  }
+  .cols.three { grid-template-columns: repeat(3, 1fr); }
+  .cols.two   { grid-template-columns: 1fr 1fr; }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.02);
+    position: relative;
+  }
+
+  .team-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .team-swatch {
+    width: 28px; height: 28px; border-radius: 7px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+  .team-card.platform .team-swatch { background: var(--platform); }
+  .team-card.persona  .team-swatch { background: var(--persona); }
+  .team-card.growth   .team-swatch { background: var(--growth); }
+
+  .team-meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .team-name {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .team-tag {
+    font-size: 11px; font-weight: 500; color: var(--muted-soft);
+  }
+
+  .resp-list { list-style: none; padding: 0; margin: 0; flex: 1; }
+  .resp-list li {
+    padding: 11px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px; line-height: 1.5;
+    display: flex; gap: 10px;
+  }
+  .resp-list li:last-child { border-bottom: none; }
+  .resp-list li::before {
+    content: ''; flex-shrink: 0; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--muted-soft); margin-top: 8px;
+  }
+  .team-card.platform .resp-list li::before { background: var(--platform-ink); }
+  .team-card.persona  .resp-list li::before { background: var(--persona-ink); }
+  .team-card.growth   .resp-list li::before { background: var(--growth-ink); }
+  .resp-list strong { font-weight: 700; color: var(--ink); }
+  .resp-list .muted { color: var(--muted); }
+  .resp-list em { font-style: normal; font-weight: 600; color: var(--ink-strong); }
+
+  /* Sub-area tabs (Home: Discovery / HITL) */
+  .subarea-tabs {
+    display: flex; gap: 6px; margin-bottom: 16px;
+  }
+  .subtab {
+    font-size: 12px; font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 8px;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .subtab.active {
+    background: var(--ink); color: white; border-color: var(--ink);
+  }
+  .subtab .num {
+    font-size: 10px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px;
+    background: rgba(255,255,255,0.15);
+  }
+  .subtab:not(.active) .num {
+    background: var(--chip); color: var(--muted);
+  }
+
+  /* Matrix table */
+  .matrix-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.02);
+  }
+  .matrix {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 13px;
+  }
+  .matrix th, .matrix td {
+    padding: 13px 18px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .matrix tr:last-child td { border-bottom: none; }
+  .matrix thead th {
+    background: var(--soft);
+    font-weight: 600; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .matrix td.area {
+    font-weight: 700; color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .matrix td.area .mini-swatch {
+    width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;
+  }
+  .pill {
+    display: inline-block; padding: 3px 9px; border-radius: 5px;
+    font-size: 11px; font-weight: 600; line-height: 1.4;
+    margin-left: 6px;
+  }
+  .pill.platform { background: rgba(74,74,214,0.10); color: var(--platform-ink); }
+  .pill.persona  { background: rgba(177,62,160,0.10); color: var(--persona-ink); }
+  .pill.growth   { background: rgba(182,104,33,0.12); color: var(--growth-ink); }
+
+  /* Bottom summary bar */
+  .summary-take {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px; margin-top: 14px;
+    display: flex; gap: 16px; align-items: center;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.02);
+  }
+  .summary-take .icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--agent-yellow);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); font-size: 16px; font-weight: 800;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .summary-take p {
+    margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-strong);
+  }
+  .summary-take strong { color: var(--brand); font-weight: 700; }
+
+  /* Legend row on overview */
+  .legend-row {
+    display: flex; gap: 14px; margin-top: 14px;
+    font-size: 12px; color: var(--muted);
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .legend-dot.platform { background: var(--platform); }
+  .legend-dot.persona  { background: var(--persona); }
+  .legend-dot.growth   { background: var(--growth); }
+
+  /* Footer nav (mimic monday subtle pill buttons) */
+  .nav {
+    position: fixed; bottom: 18px; right: 22px;
+    display: flex; gap: 6px; z-index: 10;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 4px;
+    box-shadow: 0 2px 6px rgba(15,40,80,0.05);
+  }
+  .nav button {
+    width: 28px; height: 28px; border-radius: 6px;
+    border: none; background: transparent;
+    cursor: pointer; color: var(--ink-strong);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s;
+  }
+  .nav button:hover { background: var(--soft); }
+
+  .progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: transparent; z-index: 10;
+  }
+  .progress .bar {
+    height: 100%; background: var(--brand);
+    transition: width 0.3s ease;
+  }
+
+  /* Icon helper */
+  .ic { width: 14px; height: 14px; stroke-width: 2; }
+  .ic-sm { width: 13px; height: 13px; stroke-width: 2; }
+  .text-muted { color: var(--muted); }
+
+  /* Card mini header (mimic monday section headers) */
+  .card-mini-head {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px; font-weight: 600; color: var(--ink-strong);
+  }
+  .card-mini-head .ic { color: var(--muted); }
+
+  /* Mockup strip — Figma screenshots showing what the surface looks like */
+  .mockup-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .mockup-strip.two {
+    grid-template-columns: repeat(2, minmax(0, 380px));
+    justify-content: center;
+  }
+  .mockup-strip.one {
+    grid-template-columns: minmax(0, 460px);
+    justify-content: center;
+  }
+
+  /* Trust step — source connection chips shown alongside the reasoning mockup */
+  .trust-sources {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 0 12px;
+  }
+  .trust-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px; font-weight: 600; color: var(--ink-strong);
+    box-shadow: 0 1px 2px rgba(15,40,80,0.03);
+  }
+  .trust-chip .ic { color: var(--brand); width: 13px; height: 13px; }
+  .trust-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--monday-green, #00c875); flex-shrink: 0;
+  }
+  .mockup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.04);
+    display: flex; flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .mockup-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(15,40,80,0.08);
+  }
+  .mockup-img-wrap {
+    background: var(--soft);
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    aspect-ratio: 16 / 9;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .mockup-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+  .mockup-meta {
+    padding: 7px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  .mockup-name {
+    font-size: 12.5px; font-weight: 600; color: var(--ink);
+    line-height: 1.3;
+  }
+  .mockup-tag {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 3px 7px; border-radius: 4px;
+    background: var(--chip); color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Compact team cards (when there's a mockup strip above them) */
+  .team-card.compact { padding: 12px 14px; }
+  .team-card.compact .team-head {
+    margin-bottom: 8px; padding-bottom: 8px;
+  }
+  .team-card.compact .team-swatch { width: 22px; height: 22px; border-radius: 6px; }
+  .team-card.compact .team-name { font-size: 12.5px; }
+  .team-card.compact .team-tag { font-size: 10.5px; }
+  .team-card.compact .resp-list li {
+    padding: 5px 0; font-size: 11.5px; line-height: 1.45;
+  }
+  .team-card.compact .resp-list li::before { margin-top: 6px; }
+
+  /* Section eyebrows for the 3-section format (Examples / R&R / Open questions) */
+  .section-eyebrow {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--muted-soft);
+    margin: 0 0 7px;
+  }
+  .section-eyebrow .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 17px; height: 17px;
+    border-radius: 4px;
+    background: var(--chip);
+    font-size: 10px; font-weight: 800;
+    color: var(--muted);
+  }
+  .section-eyebrow::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .section-eyebrow + .mockup-strip,
+  .section-eyebrow + .cols { margin-top: 0; }
+
+  /* Open questions section */
+  .open-questions {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .question-card {
+    display: flex; align-items: flex-start; gap: 11px;
+    background: rgba(252, 214, 51, 0.10);
+    border: 1px solid rgba(252, 214, 51, 0.42);
+    border-radius: 10px;
+    padding: 9px 13px;
+  }
+  .question-card .q-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: var(--agent-yellow);
+    font-size: 13px; font-weight: 900; color: var(--ink);
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .question-card .q-content { flex: 1; min-width: 0; }
+  .question-card .q-text {
+    font-size: 12.5px; font-weight: 600; color: var(--ink);
+    margin: 0; line-height: 1.4;
+  }
+  .question-card .q-examples {
+    font-size: 11.5px; color: var(--muted);
+    margin: 3px 0 0; line-height: 1.45;
+  }
+  .question-card .q-examples em {
+    font-style: normal; font-weight: 700; color: var(--ink-strong);
+  }
+  .open-questions .empty-state {
+    font-size: 11.5px; color: var(--muted-soft);
+    font-style: italic;
+    padding: 2px 4px;
+  }
+
+  /* Title slide — The Split visual (Platform | Surfaces | Persona) */
+  .split-visual {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    margin-top: 24px;
+    align-items: stretch;
+  }
+  .split-side {
+    padding: 22px 26px;
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    min-height: 230px;
+  }
+  .split-side.platform-side {
+    background: linear-gradient(135deg, rgba(201,201,255,0.32), rgba(201,201,255,0.08));
+    border: 1px solid rgba(74,74,214,0.18);
+  }
+  .split-side.persona-side {
+    background: linear-gradient(135deg, rgba(255,201,252,0.32), rgba(255,201,252,0.08));
+    border: 1px solid rgba(177,62,160,0.18);
+  }
+  .split-label {
+    font-size: 16px; font-weight: 800;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 9px;
+    letter-spacing: -0.005em;
+  }
+  .split-label .swatch {
+    width: 12px; height: 12px; border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .split-side.platform-side .split-label { color: var(--platform-ink); }
+  .split-side.platform-side .split-label .swatch { background: var(--platform); border: 1px solid rgba(74,74,214,0.4); }
+  .split-side.persona-side .split-label { color: var(--persona-ink); }
+  .split-side.persona-side .split-label .swatch { background: var(--persona); border: 1px solid rgba(177,62,160,0.4); }
+  .split-headline {
+    font-size: 14px; font-weight: 700;
+    color: var(--ink-strong);
+    margin: 0 0 10px;
+    line-height: 1.35;
+  }
+  .split-tags {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    gap: 5px;
+  }
+  .split-tags li {
+    font-size: 12.5px; font-weight: 600;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 9px;
+    line-height: 1.4;
+  }
+  .split-tags li::before {
+    content: ''; display: inline-block;
+    width: 5px; height: 5px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .split-side.platform-side .split-tags li::before { background: var(--platform-ink); }
+  .split-side.persona-side .split-tags li::before { background: var(--persona-ink); }
+
+  .split-divider {
+    display: flex; flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px 24px;
+    position: relative;
+  }
+  .split-divider::before {
+    content: ''; position: absolute;
+    top: 24px; bottom: 24px; left: 50%;
+    width: 1.5px;
+    background: linear-gradient(to bottom,
+      transparent,
+      rgba(15,40,80,0.18) 12%,
+      rgba(15,40,80,0.18) 88%,
+      transparent
+    );
+    transform: translateX(-50%);
+  }
+  .surface-pill {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 11.5px; font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(15,40,80,0.06);
+    letter-spacing: -0.005em;
+  }
+  .surface-pill.tbd {
+    background: rgba(252,214,51,0.10);
+    border-color: rgba(252,214,51,0.45);
+    color: var(--muted);
+  }
+  .surface-pill.tbd::after {
+    content: 'TBD';
+    margin-left: 6px;
+    font-size: 9px; font-weight: 800;
+    padding: 1px 5px;
+    background: var(--agent-yellow);
+    border-radius: 3px;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+
+  /* Milestones slide — vertical roadmap stacked in 2 columns */
+  .milestones {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 18px;
+  }
+  .milestone {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .milestone-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--agent-yellow);
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--ink);
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    margin-top: 2px;
+  }
+  .milestone.sub .milestone-num {
+    background: rgba(252,214,51,0.35);
+    font-size: 10.5px;
+    min-width: 46px;
+  }
+  .milestone-body {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-width: 0;
+  }
+  .milestone.big .milestone-body {
+    border-color: rgba(0,115,234,0.32);
+    background: rgba(0,115,234,0.03);
+  }
+  .milestone-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+  .milestone-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .milestone-owner {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .milestone-owner.platform {
+    background: rgba(74,74,214,0.13);
+    color: var(--platform-ink);
+  }
+  .milestone-owner.persona {
+    background: rgba(177,62,160,0.13);
+    color: var(--persona-ink);
+  }
+  .milestone-owner.both {
+    background: linear-gradient(90deg, rgba(74,74,214,0.13), rgba(177,62,160,0.13));
+    color: var(--ink-strong);
+  }
+  .milestone-big-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--brand);
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .milestone-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .milestone-desc em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink-strong);
+    background: rgba(0,115,234,0.06);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+  .milestone-example {
+    margin-top: 7px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--soft);
+    padding: 6px;
+    position: relative;
+  }
+  .milestone-example img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    background: var(--surface);
+  }
+  .milestone-example-label {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    background: rgba(255,255,255,0.92);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    z-index: 1;
+  }
+
+  /* Dependency graph layout for Milestones slide */
+  .dep-graph {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+    align-items: start;
+    position: relative;
+  }
+  .dep-level {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+  .dep-level-label {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    padding-bottom: 7px;
+    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dep-level-label .level-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+  .dep-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.03);
+  }
+  .dep-card.big {
+    border-color: rgba(0,115,234,0.35);
+    background: rgba(0,115,234,0.04);
+  }
+  .dep-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .dep-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 19px;
+    border-radius: 4px;
+    background: var(--agent-yellow);
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--ink);
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 1.5px rgba(0,0,0,0.08);
+    margin-top: 1px;
+  }
+  .dep-card.sub .dep-num {
+    background: rgba(252,214,51,0.42);
+    font-size: 9px;
+    min-width: 42px;
+  }
+  .dep-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .dep-title .sub-tag {
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 10.5px;
+  }
+  .dep-desc {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .dep-desc em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink-strong);
+    background: rgba(0,115,234,0.06);
+    padding: 0 4px;
+    border-radius: 3px;
+    font-size: 10px;
+  }
+  .dep-pill-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .dep-owner {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .dep-owner.platform { background: rgba(74,74,214,0.13); color: var(--platform-ink); }
+  .dep-owner.persona { background: rgba(177,62,160,0.13); color: var(--persona-ink); }
+  .dep-big-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--brand);
+    color: #fff;
+  }
+  .dep-deps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .dep-deps-label {
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .dep-deps-label::before {
+    content: '←';
+    font-size: 11px;
+    color: var(--muted-soft);
+    letter-spacing: 0;
+  }
+  .dep-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--ink-strong);
+    letter-spacing: 0.02em;
+  }
+  .dep-chip.bulk {
+    background: rgba(0,0,0,0.03);
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .milestone-research {
+    margin-top: 14px;
+    padding: 9px 13px;
+    background: rgba(0,0,0,0.02);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 11px;
+  }
+  .milestone-research .research-label {
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 9.5px;
+  }
+  .milestone-research .research-item {
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .milestone-research .research-item em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--brand);
+  }
+  .milestone-research .research-item + .research-item::before {
+    content: '·';
+    color: var(--muted-soft);
+    margin-right: 10px;
+    font-weight: 800;
+  }
+
+  /* TBD placeholder card for R&R sections that aren't defined yet */
+  .rr-tbd {
+    display: flex; align-items: center; gap: 14px;
+    padding: 22px 26px;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.015);
+  }
+  .rr-tbd .tbd-tag {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--chip);
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .rr-tbd p {
+    margin: 0;
+    font-size: 13px; color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* When the new 3-section format is used, give .cols a fixed compact height
+     so the team cards never push the open-questions section off-screen. */
+  .slide.format-3 .cols { flex: 0 0 auto; min-height: 0; }
+  .slide.format-3 .slide-sub { margin: 4px 0 12px; }
+  .slide.format-3 .mockup-strip { margin: 0 0 10px; }
+  .slide.format-3 .mockup-strip + .section-eyebrow { margin-top: 0; }
+  .slide.format-3 .cols + .section-eyebrow { margin-top: 10px; }
+  .slide.format-3 .resp-list li { padding: 3px 0; }
+  .slide.format-3 .team-card.compact .resp-list { gap: 2px; }
+
+  /* Slide 2 specifically — extra tight to fit subarea-tabs + 3 mockups + 3 team cards + open question */
+  .slide.compact-3col .slide-sub { font-size: 13px; margin: 2px 0 8px; }
+  .slide.compact-3col .subarea-tabs { margin: 0 0 8px; }
+  .slide.compact-3col .subarea-tabs .subtab { padding: 4px 10px; font-size: 11px; }
+  .slide.compact-3col .mockup-img-wrap { aspect-ratio: 2 / 1; padding: 6px; }
+  .slide.compact-3col .mockup-meta { padding: 5px 12px; }
+  .slide.compact-3col .mockup-name { font-size: 11.5px; }
+  .slide.compact-3col .mockup-tag { font-size: 9.5px; padding: 2px 6px; }
+  .slide.compact-3col .team-card.compact { padding: 10px 12px; }
+  .slide.compact-3col .team-card.compact .team-head { margin-bottom: 6px; }
+  .slide.compact-3col .team-card.compact .team-swatch { width: 22px; height: 22px; }
+  .slide.compact-3col .team-card.compact .team-name { font-size: 12px; }
+  .slide.compact-3col .team-card.compact .team-tag { font-size: 10px; }
+  .slide.compact-3col .resp-list li { font-size: 11.5px; padding: 2px 0; }
+  .slide.compact-3col .section-eyebrow { margin: 0 0 5px; }
+  .slide.compact-3col .question-card { padding: 8px 12px; }
+  .slide.compact-3col .question-card .q-text { font-size: 12px; }
+  .slide.compact-3col .question-card .q-examples { font-size: 11px; margin-top: 2px; }
+
+  /* Persona Teams checklist — 9 questions grid */
+  .checklist {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    flex: 1;
+    align-content: stretch;
+  }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 15px; font-weight: 600; color: var(--ink);
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(15,40,80,0.02);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .checklist li:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(15,40,80,0.06);
+  }
+  .checklist li .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--agent-yellow);
+    font-size: 13px; font-weight: 800;
+    color: var(--ink);
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="bar" id="progressBar"></div></div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: TITLE — THE SPLIT -->
+  <section class="slide active">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Agent Platform</span>
+      </div>
+      <div class="page-num">01 / 10</div>
+    </div>
+    <div class="title-wrap">
+      <span class="title-tag">
+        <span class="agent-square"></span>
+        Platform Team · Brainstorm output
+      </span>
+      <h1 class="deck-title">
+        The Agent <span class="accent">Platform</span>
+      </h1>
+      <p class="deck-sub">
+        Where <strong>Platform</strong> ends — and <strong>Persona</strong> begins.
+      </p>
+    </div>
+
+    <!-- The Split visual -->
+    <div class="split-visual">
+      <div class="split-side platform-side">
+        <div class="split-label"><span class="swatch"></span>Platform Team</div>
+        <p class="split-headline">The rails.</p>
+        <ul class="split-tags">
+          <li>Schemas &amp; contracts</li>
+          <li>The brain — orchestration &amp; execution</li>
+          <li>UI primitives &amp; templates</li>
+          <li>Lifecycle, state &amp; routing</li>
+        </ul>
+      </div>
+
+      <div class="split-divider">
+        <span class="surface-pill">Discovery Widget</span>
+        <span class="surface-pill">HITL</span>
+        <span class="surface-pill">Reasoning &amp; Trust</span>
+        <span class="surface-pill">Creation &amp; Editing</span>
+        <span class="surface-pill">Agent Page</span>
+        <span class="surface-pill">Triggers</span>
+      </div>
+
+      <div class="split-side persona-side">
+        <div class="split-label"><span class="swatch"></span>Persona Teams</div>
+        <p class="split-headline">The payload.</p>
+        <ul class="split-tags">
+          <li>Content, copy &amp; assets</li>
+          <li>Tools &amp; business logic</li>
+          <li>Domain UI within Platform's template</li>
+          <li>Outcomes &amp; governance</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <span class="meta-pill"><span class="dot" style="background: var(--platform)"></span>6 surfaces</span>
+      <span class="meta-pill"><span class="dot" style="background: var(--persona)"></span>2 primary teams</span>
+      <span class="meta-pill"><span class="dot" style="background: var(--brand)"></span>1 shared pattern</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: HOME — DISCOVERY WIDGET -->
+  <section class="slide format-3 compact-3col">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Surface 01 · Home Page</span>
+      </div>
+      <div class="page-num">02 / 10</div>
+    </div>
+    <div class="slide-title-row">
+      <span class="pill-tag">Home Page</span>
+    </div>
+    <h2 class="slide-title">Discovery Widget</h2>
+    <p class="slide-sub">
+      The agent carousel where end-users discover and launch agent setup flows.
+      Persona Teams plug in their own variants — Platform renders them in a uniform template.
+    </p>
+    <div class="subarea-tabs">
+      <span class="subtab active"><span class="num">A</span>Discovery Widget</span>
+      <span class="subtab"><span class="num">B</span>Human-in-the-Loop</span>
+    </div>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/discovery-meeting-prep.png" alt="Meeting Prep agent — Discovery Widget variant" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Meeting Prep agent</span>
+          <span class="mockup-tag">Variant 01</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/discovery-lead-sourcer.png" alt="Lead Sourcer agent — Discovery Widget variant" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Lead Sourcer agent</span>
+          <span class="mockup-tag">Variant 02</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/discovery-pipeline-health.png" alt="Pipeline Health agent — Discovery Widget variant" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Pipeline Health agent</span>
+          <span class="mockup-tag">Variant 03</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols three">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">Interface &amp; implementation</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Interface.</strong> <span class="muted">The contract Persona Teams plug into.</span></span></li>
+          <li><span><strong>Implementation.</strong> <span class="muted">Builds and renders the widget itself.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">Content &amp; logic</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Content.</strong> <span class="muted">Visual &amp; textual — what fills the carousel slot.</span></span></li>
+          <li><span><strong>Logic.</strong> <span class="muted">The rules that decide which content is shown.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card growth compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Growth Team</span>
+            <span class="team-tag">Targeting</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Targeting optimization.</strong> <span class="muted">Owns the business logic deciding which user segment sees which agent.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <div class="question-card">
+        <span class="q-icon">?</span>
+        <div class="q-content">
+          <p class="q-text">Who owns the display logic — which agent we show to which user, and how often we re-suggest?</p>
+          <p class="q-examples">
+            <em>Prep me</em> — show once. &nbsp;·&nbsp;
+            <em>Pipeline Health</em> — may re-suggest even after activation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: HOME — HITL -->
+  <section class="slide format-3">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Surface 01 · Home Page</span>
+      </div>
+      <div class="page-num">03 / 10</div>
+    </div>
+    <div class="slide-title-row">
+      <span class="pill-tag">Home Page</span>
+    </div>
+    <h2 class="slide-title">Human-in-the-Loop (HITL)</h2>
+    <p class="slide-sub">
+      Centralized container that aggregates every action requiring manual user
+      validation. Platform owns the Approve/Reject lifecycle — Persona owns the card content.
+    </p>
+    <div class="subarea-tabs">
+      <span class="subtab"><span class="num">A</span>Discovery Widget</span>
+      <span class="subtab active"><span class="num">B</span>Human-in-the-Loop</span>
+    </div>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip two">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/hitl-needs-approval-lead.png" alt="HITL — Needs approval, lead found" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Needs approval · Lead found</span>
+          <span class="mockup-tag">Approval Type 01</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/hitl-notify-reps.png" alt="HITL — Notify reps about stalled deal" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Notify reps · Stalled deal</span>
+          <span class="mockup-tag">Approval Type 02</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols two">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">Template, routing, notifications</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>The template.</strong> <span class="muted">Defines the UI shell — the slot Persona Teams plug their card into.</span></span></li>
+          <li><span><strong>Aggregation &amp; routing.</strong> <span class="muted">Collects pending actions from every agent in one place, and routes the user's answers back to the right agent.</span></span></li>
+          <li><span><strong>Notifications.</strong> <span class="muted">The infrastructure that pings users when their attention is needed.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">Tools, logic, UI</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Tools.</strong> <span class="muted">Define the tools the agent uses — per the Platform's interface.</span></span></li>
+          <li><span><strong>Logic.</strong> <span class="muted">All business logic — e.g., to send an email, write a <em>Send Email</em> tool.</span></span></li>
+          <li><span><strong>UI.</strong> <span class="muted">Build the card's UI inside the Platform's template.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <p class="empty-state">No open questions yet.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: REASONING & TRUST -->
+  <section class="slide format-3">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Onboarding · Build trust</span>
+      </div>
+      <div class="page-num">04 / 10</div>
+    </div>
+    <h2 class="slide-title">Reasoning &amp; Trust</h2>
+    <p class="slide-sub">
+      Before configuring anything, the agent shows what it's reading.
+      <strong>Trust by transparency</strong>, not by promise.
+    </p>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip one">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/reasoning-sourcing-leads.png" alt="Reasoning step — agent showing what data sources it's reading" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Reasoning · Sourcing your leads</span>
+          <span class="mockup-tag">Setup step</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols two">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">UI &amp; interface</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>UI.</strong> <span class="muted">The reasoning experience itself — how the "thinking out loud" moment looks.</span></span></li>
+          <li><span><strong>Interface.</strong> <span class="muted">How Persona Teams hand us their content &amp; assets.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">Content, assets, timing, seeds</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Content.</strong> <span class="muted">What's shown at each step (e.g., <em>"Reading your email domain..."</em>).</span></span></li>
+          <li><span><strong>Assets.</strong> <span class="muted">The sources &amp; visuals the agent reads from.</span></span></li>
+          <li><span><strong>Timing.</strong> <span class="muted">How long each reasoning step runs.</span></span></li>
+          <li><span><strong>Seed values.</strong> <span class="muted">Expose an endpoint returning initial values — or hints — for the agent's settings, when possible.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <p class="empty-state">No open questions yet.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: CREATION & EDITING -->
+  <section class="slide format-3">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Surface 02 · Provisioning</span>
+      </div>
+      <div class="page-num">05 / 10</div>
+    </div>
+    <h2 class="slide-title">Creation &amp; Editing</h2>
+    <p class="slide-sub">
+      The configuration workspace. Platform provides the engine; Persona declares
+      what the agent produces, with which tools, under which permissions.
+    </p>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/creation-lead-sourcer-output.png" alt="Lead Sourcer agent — output schema" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Lead Sourcer agent</span>
+          <span class="mockup-tag">Output 01</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/creation-pipeline-health-output.png" alt="Pipeline Health agent — output schema" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Pipeline Health agent</span>
+          <span class="mockup-tag">Output 02</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/creation-meeting-prep-output.png" alt="Meeting Prep agent — output schema" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Meeting Prep agent</span>
+          <span class="mockup-tag">Output 03</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols two">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">Schema, brain, chat, UI</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Agent Definition Schema.</strong> <span class="muted">The contract every agent declares itself in.</span></span></li>
+          <li><span><strong>The brain.</strong> <span class="muted">The runtime that powers setup — orchestration &amp; execution.</span></span></li>
+          <li><span><strong>Chat interface.</strong> <span class="muted">The conversational shell that drives configuration.</span></span></li>
+          <li><span><strong>Settings UI.</strong> <span class="muted">The visual configuration surface itself.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">Definition, tools, UI</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Agent definition.</strong> <span class="muted">Declare the agent per the Platform's schema.</span></span></li>
+          <li><span><strong>Tools.</strong> <span class="muted">Build the tools the agent uses.</span></span></li>
+          <li><span><strong>Tools UI.</strong> <span class="muted">Build each tool's UI per the Platform's interface.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <div class="question-card">
+        <span class="q-icon">?</span>
+        <div class="q-content">
+          <p class="q-text">What's the scope &amp; ownership of the simulation framework?</p>
+          <p class="q-examples">
+            <em>Is it in V1?</em> &nbsp;·&nbsp;
+            <em>What does it actually cover &amp; how does it behave?</em> &nbsp;·&nbsp;
+            <em>Where's the Platform / Persona boundary?</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: AGENT PAGE -->
+  <section class="slide format-3">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Surface 03 · Dedicated Hub</span>
+      </div>
+      <div class="page-num">06 / 10</div>
+    </div>
+    <h2 class="slide-title">Agent Page</h2>
+    <p class="slide-sub">
+      The isolated monitoring &amp; diagnostic surface per deployed agent. Platform
+      owns the frame; Persona owns the outcome.
+    </p>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip two">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/agent-page-cold-storage.png" alt="Cold storage leads — Agent Page with outcomes &amp; HITL" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Cold storage leads</span>
+          <span class="mockup-tag">Agent Page 01</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/agent-page-meeting-prep.png" alt="Meeting Prep — Agent Page in CRM context" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Meeting Prep</span>
+          <span class="mockup-tag">Agent Page 02</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols two">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">Edit, history, HITL, outcomes</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Edit access.</strong> <span class="muted">Entry point back to the agent's settings.</span></span></li>
+          <li><span><strong>Execution ledger.</strong> <span class="muted">Chronological run history.</span></span></li>
+          <li><span><strong>Contextual HITL filtering.</strong> <span class="muted">Embeds the HITL component, scoped to this agent's pending actions only.</span></span></li>
+          <li><span><strong>Outcome endpoint.</strong> <span class="muted">API to fetch all outcomes for a given agent &amp; timeframe.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">UI ownership</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>The UI layer.</strong> <span class="muted">You own it — each Persona Team places whatever they need, within the Platform's guidelines.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <p class="empty-state">No open questions yet.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: TRIGGERS -->
+  <section class="slide format-3">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">How runs start</span>
+      </div>
+      <div class="page-num">07 / 10</div>
+    </div>
+    <h2 class="slide-title">Triggers</h2>
+    <p class="slide-sub">
+      Two ways to start an agent run — <strong>On-demand</strong> or
+      <strong>Cron</strong> (recurring on a schedule).
+    </p>
+
+    <!-- 01 · Examples -->
+    <div class="section-eyebrow"><span class="badge">01</span>Examples</div>
+    <div class="mockup-strip two">
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/trigger-recurring-cron.png" alt="Trigger configuration — Recurring (Cron) with day, time, and timezone" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">Recurring (Cron)</span>
+          <span class="mockup-tag">Trigger 01</span>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-img-wrap">
+          <img src="presentation-assets/trigger-on-demand-prep-me.png" alt="On-demand trigger — Prep me button on a calendar meeting" />
+        </div>
+        <div class="mockup-meta">
+          <span class="mockup-name">On-demand · "Prep me"</span>
+          <span class="mockup-tag">Trigger 02</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · R&R -->
+    <div class="section-eyebrow"><span class="badge">02</span>R&amp;R · Roles &amp; Responsibilities</div>
+    <div class="cols two">
+      <div class="team-card platform compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Platform Team</span>
+            <span class="team-tag">Cron, endpoint, schema</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Cron infrastructure.</strong> <span class="muted">The scheduling engine for recurring runs.</span></span></li>
+          <li><span><strong>Run endpoint.</strong> <span class="muted">The API the Platform calls when a trigger fires.</span></span></li>
+          <li><span><strong>Run input schema.</strong> <span class="muted">The contract for what each run receives.</span></span></li>
+        </ul>
+      </div>
+      <div class="team-card persona compact">
+        <div class="team-head">
+          <div class="team-swatch"></div>
+          <div class="team-meta">
+            <span class="team-name">Persona Teams</span>
+            <span class="team-tag">Entry points</span>
+          </div>
+        </div>
+        <ul class="resp-list">
+          <li><span><strong>Run entry point(s).</strong> <span class="muted">The actual function(s) the Platform invokes when a trigger fires — per the input schema.</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 03 · Open questions -->
+    <div class="section-eyebrow"><span class="badge">03</span>Open questions</div>
+    <div class="open-questions">
+      <p class="empty-state">No open questions yet.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: SUMMARY -->
+  <section class="slide">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Summary · The contract</span>
+      </div>
+      <div class="page-num">08 / 10</div>
+    </div>
+    <div class="slide-title-row">
+      <span class="pill-tag">Summary</span>
+    </div>
+    <h2 class="slide-title">The boundary, at a glance</h2>
+    <p class="slide-sub">
+      Across every touchpoint the pattern is identical — Platform ships the
+      primitives, Persona ships the meaning.
+    </p>
+
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th style="width: 26%">Touchpoint</th>
+            <th>Platform owns</th>
+            <th>Persona owns</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: var(--platform)"></span>Home — Discovery</td>
+            <td>Carousel template, content ingestion</td>
+            <td>Copy, imagery, MF payload <span class="pill persona">Persona</span> · targeting <span class="pill growth">Growth</span></td>
+          </tr>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: var(--platform)"></span>Home — HITL</td>
+            <td>Lifecycle (Approve / Reject / Feedback)</td>
+            <td>Schema, business logic, presentation MF</td>
+          </tr>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: #C9E6FF"></span>Reasoning &amp; Trust</td>
+            <td>Trust UI framework, source registry, progress states</td>
+            <td>Scan list, reasoning copy, source-to-context mapping</td>
+          </tr>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: var(--persona)"></span>Creation &amp; Editing</td>
+            <td>Schema engine, Simulation, Activity Log, Scheduler</td>
+            <td>Activation config, tools, permissions, auth, test inputs</td>
+          </tr>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: var(--growth)"></span>Agent Page</td>
+            <td>Edit access, ledger, scoped HITL, outcome endpoint</td>
+            <td>UI layer — within Platform's guidelines</td>
+          </tr>
+          <tr>
+            <td class="area"><span class="mini-swatch" style="background: var(--platform)"></span>Triggers</td>
+            <td>Cron infrastructure, run endpoint, run input schema</td>
+            <td>Run entry point(s)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="summary-take">
+      <div class="icon">→</div>
+      <p>
+        <strong>Platform = rails.</strong> Schemas, lifecycle, layout slots, history, simulation.
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <strong>Persona = payload.</strong> Tools, business logic, copy, outcome UI, governance of their domain.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: PERSONA TEAMS CHECKLIST -->
+  <section class="slide">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Closing · Persona Teams checklist</span>
+      </div>
+      <div class="page-num">09 / 10</div>
+    </div>
+    <h2 class="slide-title">For every Persona Team</h2>
+
+    <ol class="checklist">
+      <li><span class="num">1</span><span>What is the required context?</span></li>
+      <li><span class="num">2</span><span>Value-demonstrating entry point</span></li>
+      <li><span class="num">3</span><span>Reasoning — what are we doing to create value?</span></li>
+      <li><span class="num">4</span><span>Visual value + Time to VV</span></li>
+      <li><span class="num">5</span><span>What represents the outcome and how</span></li>
+      <li><span class="num">6</span><span>Tools</span></li>
+      <li><span class="num">7</span><span>HITL</span></li>
+      <li><span class="num">8</span><span>Home</span></li>
+      <li><span class="num">9</span><span>Mobile app</span></li>
+    </ol>
+  </section>
+
+  <!-- SLIDE 10: MILESTONES -->
+  <section class="slide">
+    <div class="topbar">
+      <div class="brand-mark">
+        <span class="logo">m</span>
+        <span>monday CRM</span>
+        <span class="sep"></span>
+        <span class="crumb">Closing · The build sequence</span>
+      </div>
+      <div class="page-num">10 / 10</div>
+    </div>
+    <h2 class="slide-title">Milestones &amp; Dependencies</h2>
+    <p class="slide-sub">
+      The build sequence — each layer unlocks the next.
+    </p>
+
+    <div class="dep-graph">
+      <!-- LAYER 1 — Foundation (no dependencies) -->
+      <div class="dep-level">
+        <div class="dep-level-label"><span class="level-num">1</span>Foundation</div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">01</span>
+            <span class="dep-title">Dumb agent (no tools)</span>
+          </div>
+          <p class="dep-desc">Basic agent definition (system prompt + skills). Platform ships a dummy in <em>mf-crm-agents-playground</em>.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+        </div>
+        <div class="dep-card big">
+          <div class="dep-card-head">
+            <span class="dep-num">03</span>
+            <span class="dep-title">CRM Agents page <span class="sub-tag">(UI only)</span></span>
+          </div>
+          <p class="dep-desc">The full UI shell — my agents → agent page → session. Plus reasoning &amp; trust visuals.</p>
+          <div class="dep-pill-row">
+            <span class="dep-big-tag">Big</span>
+            <span class="dep-owner platform">Platform</span>
+            <span class="dep-owner persona">Persona</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 2 — Build out -->
+      <div class="dep-level">
+        <div class="dep-level-label"><span class="level-num">2</span>Build out</div>
+        <div class="dep-card sub">
+          <div class="dep-card-head">
+            <span class="dep-num">01.1</span>
+            <span class="dep-title">Dumb agents</span>
+          </div>
+          <p class="dep-desc">Persona Teams ship dumbed-down agents + build the <em>auto-populate</em> endpoint.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner persona">Persona</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#01</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">02</span>
+            <span class="dep-title">Tool registry &amp; gateway</span>
+          </div>
+          <p class="dep-desc">Registry with <em>allow / ask / deny</em> perms + scope-level granularity. TBD: auth flows.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#01</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">06</span>
+            <span class="dep-title">Scheduled execution trigger</span>
+          </div>
+          <p class="dep-desc">Cron-based recurring runs.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#01</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">04</span>
+            <span class="dep-title">Chat in setup &amp; session pages</span>
+          </div>
+          <p class="dep-desc">Tool calls and results rendered as text.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#03</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 3 — Expand -->
+      <div class="dep-level">
+        <div class="dep-level-label"><span class="level-num">3</span>Expand</div>
+        <div class="dep-card sub">
+          <div class="dep-card-head">
+            <span class="dep-num">02.1</span>
+            <span class="dep-title">Persona Teams' tools</span>
+          </div>
+          <p class="dep-desc">Persona-owned domain tools + Platform-owned shared tools (monday, CRM context layer).</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner persona">Persona</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#02</span>
+          </div>
+        </div>
+        <div class="dep-card sub">
+          <div class="dep-card-head">
+            <span class="dep-num">02.2</span>
+            <span class="dep-title">HITL interface <span class="sub-tag">— CRM home only</span></span>
+          </div>
+          <p class="dep-desc">Centralized approvals queue, scoped to the Home page for now.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#02</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 4 — Apply -->
+      <div class="dep-level">
+        <div class="dep-level-label"><span class="level-num">4</span>Apply</div>
+        <div class="dep-card sub">
+          <div class="dep-card-head">
+            <span class="dep-num">03.1</span>
+            <span class="dep-title">Connect UI to logic</span>
+          </div>
+          <p class="dep-desc">Wire the UI to the agent runtime — create / configure agents, manage sessions end-to-end.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+            <span class="dep-owner persona">Persona</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#03</span>
+            <span class="dep-chip bulk">all #01s</span>
+            <span class="dep-chip bulk">all #02s</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">05</span>
+            <span class="dep-title">Visual representation for tools</span>
+          </div>
+          <p class="dep-desc">Custom widgets inside the chat interface.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+            <span class="dep-owner persona">Persona</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#02.1</span>
+            <span class="dep-chip">#04</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-card-head">
+            <span class="dep-num">07</span>
+            <span class="dep-title">HITL notifications <span class="sub-tag">(monday, mobile)</span></span>
+          </div>
+          <p class="dep-desc">Multi-channel pings whenever a user's attention is needed.</p>
+          <div class="dep-pill-row">
+            <span class="dep-owner platform">Platform</span>
+          </div>
+          <div class="dep-deps">
+            <span class="dep-deps-label">After</span>
+            <span class="dep-chip">#02.2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="milestone-research">
+      <span class="research-label">Research (within #01)</span>
+      <span class="research-item">Tool capabilities &amp; solution design — <em>@Irad Cohen</em></span>
+      <span class="research-item">Outcomes definition / persistency — <em>@Omer Grinboim</em></span>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Previous"><i data-lucide="chevron-left" class="ic"></i></button>
+  <button id="nextBtn" aria-label="Next"><i data-lucide="chevron-right" class="ic"></i></button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const bar = document.getElementById('progressBar');
+  let i = 0;
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  document.getElementById('nextBtn').onclick = () => show(i + 1);
+  document.getElementById('prevBtn').onclick = () => show(i - 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) window.lucide.createIcons();
+    show(0);
+  });
+</script>
+
+</body>
+</html>
