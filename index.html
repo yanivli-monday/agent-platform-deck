@@ -1339,6 +1339,121 @@
     z-index: 3;
   }
 
+  /* Detailed milestones plan — 3 × 3 grid of compact cards */
+  .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+    flex: 1;
+    min-height: 0;
+  }
+  .plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px 13px;
+    box-shadow: 0 1px 3px rgba(15,40,80,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-height: 0;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .plan-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15,40,80,0.06);
+  }
+  .plan-card .plan-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .plan-card .plan-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: var(--agent-yellow);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    flex-shrink: 0;
+    box-shadow: 0 1px 1.5px rgba(0,0,0,0.06);
+  }
+  .plan-card .plan-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink-strong);
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .plan-card .plan-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .plan-card .plan-list li {
+    font-size: 10.5px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding-left: 10px;
+    position: relative;
+  }
+  .plan-card .plan-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--agent-yellow);
+  }
+  .plan-card .plan-list em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--ink-strong);
+    background: rgba(252,214,51,0.32);
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+  .plan-card .plan-sub-label {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--chip);
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .plan-card .plan-sub-label:first-of-type {
+    margin-top: 0;
+  }
+  .plan-card .plan-note {
+    font-size: 9.5px;
+    font-style: italic;
+    color: var(--muted-soft);
+    margin: 4px 0 0;
+    padding-left: 10px;
+    border-left: 2px solid var(--border-strong);
+    line-height: 1.4;
+  }
+
 </style>
 </head>
 <body>
@@ -1356,7 +1471,7 @@
         <span class="sep"></span>
         <span class="crumb">Agent Platform</span>
       </div>
-      <div class="page-num">01 / 11</div>
+      <div class="page-num">01 / 12</div>
     </div>
     <div class="title-wrap">
       <span class="title-tag">
@@ -1421,7 +1536,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 01 · Home Page</span>
       </div>
-      <div class="page-num">02 / 11</div>
+      <div class="page-num">02 / 12</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Home Page</span>
@@ -1536,7 +1651,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 01 · Home Page</span>
       </div>
-      <div class="page-num">03 / 11</div>
+      <div class="page-num">03 / 12</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Home Page</span>
@@ -1623,7 +1738,7 @@
         <span class="sep"></span>
         <span class="crumb">Onboarding · Build trust</span>
       </div>
-      <div class="page-num">04 / 11</div>
+      <div class="page-num">04 / 12</div>
     </div>
     <h2 class="slide-title">Reasoning &amp; Trust</h2>
     <p class="slide-sub">
@@ -1694,7 +1809,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 02 · Provisioning</span>
       </div>
-      <div class="page-num">05 / 11</div>
+      <div class="page-num">05 / 12</div>
     </div>
     <h2 class="slide-title">Creation &amp; Editing</h2>
     <p class="slide-sub">
@@ -1794,7 +1909,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 03 · Dedicated Hub</span>
       </div>
-      <div class="page-num">06 / 11</div>
+      <div class="page-num">06 / 12</div>
     </div>
     <h2 class="slide-title">Agent Page</h2>
     <p class="slide-sub">
@@ -1873,7 +1988,7 @@
         <span class="sep"></span>
         <span class="crumb">How runs start</span>
       </div>
-      <div class="page-num">07 / 11</div>
+      <div class="page-num">07 / 12</div>
     </div>
     <h2 class="slide-title">Triggers</h2>
     <p class="slide-sub">
@@ -1951,7 +2066,7 @@
         <span class="sep"></span>
         <span class="crumb">Summary · The contract</span>
       </div>
-      <div class="page-num">08 / 11</div>
+      <div class="page-num">08 / 12</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Summary</span>
@@ -2025,7 +2140,7 @@
         <span class="sep"></span>
         <span class="crumb">Closing · Persona Teams checklist</span>
       </div>
-      <div class="page-num">09 / 11</div>
+      <div class="page-num">09 / 12</div>
     </div>
     <h2 class="slide-title">For every Persona Team</h2>
 
@@ -2051,7 +2166,7 @@
         <span class="sep"></span>
         <span class="crumb">Closing · The build sequence</span>
       </div>
-      <div class="page-num">10 / 11</div>
+      <div class="page-num">10 / 12</div>
     </div>
     <h2 class="slide-title">Milestones &amp; Dependencies</h2>
     <p class="slide-sub">
@@ -2248,7 +2363,7 @@
         <span>Agent Platform · monday CRM</span>
         <span class="crumb">Closing · Timeline</span>
       </div>
-      <div class="page-num">11 / 11</div>
+      <div class="page-num">11 / 12</div>
     </div>
     <h2 class="slide-title">Milestones Timeline</h2>
 
@@ -2323,6 +2438,132 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — Detailed milestones plan (9 steps, 3×3 grid) -->
+  <section class="slide">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="route" class="ic"></i></div>
+        <span>Agent Platform · monday CRM</span>
+        <span class="crumb">Closing · 9-step build plan</span>
+      </div>
+      <div class="page-num">12 / 12</div>
+    </div>
+    <h2 class="slide-title">Milestones · Build Plan</h2>
+
+    <div class="plan-grid">
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M1</span>
+          <span class="plan-title">Skeleton agents (in-memory)</span>
+        </div>
+        <ul class="plan-list">
+          <li>Agents <em>without tools</em> — ingest external context &amp; reason on top.</li>
+          <li><em>Temporary</em> UI to fetch, create &amp; run end-to-end.</li>
+          <li>Session traces (logs) in <em>langsmith</em>.</li>
+          <li>Agents are <em>in-memory only</em> — no DB yet.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M2</span>
+          <span class="plan-title">Tools + DB persistence</span>
+        </div>
+        <ul class="plan-list">
+          <li>Agents gain the ability to <em>call tools</em> (tools must already be authenticated).</li>
+          <li>Agents are now <em>persisted in a database</em>.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M3</span>
+          <span class="plan-title">Agents page &amp; chat shell</span>
+        </div>
+        <span class="plan-sub-label">Agents page</span>
+        <ul class="plan-list">
+          <li>Shows all agents the user has created.</li>
+          <li>Click an agent → <em>agent home</em> (two placeholder tabs).</li>
+          <li>Initial chat entry point.</li>
+        </ul>
+        <span class="plan-sub-label">Chat</span>
+        <ul class="plan-list">
+          <li>Create / edit agent settings in the chat modal <em>(no chat yet)</em>.</li>
+          <li>Home widget → opens the modal.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M4</span>
+          <span class="plan-title">Agent home + read-only chat</span>
+        </div>
+        <ul class="plan-list">
+          <li><em>Persona Teams</em> build their agent's home page.</li>
+          <li><em>Read-only chat</em> (session history) — text only.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M5</span>
+          <span class="plan-title">Live chat + tool UI</span>
+        </div>
+        <ul class="plan-list">
+          <li>Chat input to <em>converse with the agent</em> (agent doesn't yet edit its own settings).</li>
+          <li>Persona Teams ship UI for their tools (not connected yet).</li>
+        </ul>
+        <p class="plan-note">TBD whether this makes sense before the UI can actually be used.</p>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M6</span>
+          <span class="plan-title">Chat-driven editing + activity</span>
+        </div>
+        <ul class="plan-list">
+          <li>Chat can <em>edit the agent's settings</em>.</li>
+          <li>Home widget opens the <em>setup modal</em>.</li>
+          <li><em>Activity log</em> — see all agent runs; open a run's chat to continue the conversation.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M7</span>
+          <span class="plan-title">Scheduling + external tools</span>
+        </div>
+        <ul class="plan-list">
+          <li>Users define <em>if &amp; when</em> their agents run.</li>
+          <li>Users connect to their <em>external tools</em> from the chat modal.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M8</span>
+          <span class="plan-title">Magic moment</span>
+        </div>
+        <ul class="plan-list">
+          <li>On new agent creation, before the setup screen we show <em>"waiting… fetching… thinking…"</em>.</li>
+          <li>During that wait, we fetch data to <em>pre-populate the agent's settings</em>.</li>
+        </ul>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-head">
+          <span class="plan-num">M9</span>
+          <span class="plan-title">Tool widgets in chat</span>
+        </div>
+        <ul class="plan-list">
+          <li><em>Custom widgets</em> render tool calls &amp; results inside the chat interface.</li>
+        </ul>
+      </div>
+
     </div>
   </section>
 
