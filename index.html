@@ -1453,6 +1453,70 @@
     border-left: 2px solid var(--border-strong);
     line-height: 1.4;
   }
+  /* Flow connectors between milestones — show one-after-another sequence */
+  .plan-card { position: relative; }
+  .plan-connector {
+    position: absolute;
+    z-index: 12;
+    pointer-events: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--app-shell-bg);
+    border: 1.5px solid var(--brand);
+    box-shadow: 0 1px 3px rgba(0,115,234,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plan-connector .ic {
+    width: 13px;
+    height: 13px;
+    color: var(--brand);
+    stroke-width: 2.5;
+  }
+  .plan-connector.right {
+    right: -19px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .plan-connector.wrap {
+    right: -10px;
+    bottom: -19px;
+  }
+  /* Dashed connecting line in the gap between sequential cards */
+  .plan-card.flow-right::before {
+    content: '';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    width: 14px;
+    height: 1.5px;
+    background: repeating-linear-gradient(
+      to right,
+      rgba(0,115,234,0.4) 0,
+      rgba(0,115,234,0.4) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+    z-index: 4;
+  }
+  .plan-card.flow-wrap::before {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    right: 10px;
+    width: 1.5px;
+    height: 14px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,115,234,0.4) 0,
+      rgba(0,115,234,0.4) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+    z-index: 4;
+  }
 
 </style>
 </head>
@@ -2455,7 +2519,7 @@
 
     <div class="plan-grid">
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M1</span>
           <span class="plan-title">Skeleton agents (in-memory)</span>
@@ -2466,9 +2530,10 @@
           <li>Session traces (logs) in <em>langsmith</em>.</li>
           <li>Agents are <em>in-memory only</em> — no DB yet.</li>
         </ul>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M2</span>
           <span class="plan-title">Tools + DB persistence</span>
@@ -2477,9 +2542,10 @@
           <li>Agents gain the ability to <em>call tools</em> (tools must already be authenticated).</li>
           <li>Agents are now <em>persisted in a database</em>.</li>
         </ul>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-wrap">
         <div class="plan-head">
           <span class="plan-num">M3</span>
           <span class="plan-title">Agents page &amp; chat shell</span>
@@ -2495,9 +2561,10 @@
           <li>Create / edit agent settings in the chat modal <em>(no chat yet)</em>.</li>
           <li>Home widget → opens the modal.</li>
         </ul>
+        <span class="plan-connector wrap"><i data-lucide="corner-down-left" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M4</span>
           <span class="plan-title">Agent home + read-only chat</span>
@@ -2506,9 +2573,10 @@
           <li><em>Persona Teams</em> build their agent's home page.</li>
           <li><em>Read-only chat</em> (session history) — text only.</li>
         </ul>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M5</span>
           <span class="plan-title">Live chat + tool UI</span>
@@ -2518,9 +2586,10 @@
           <li>Persona Teams ship UI for their tools (not connected yet).</li>
         </ul>
         <p class="plan-note">TBD whether this makes sense before the UI can actually be used.</p>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-wrap">
         <div class="plan-head">
           <span class="plan-num">M6</span>
           <span class="plan-title">Chat-driven editing + activity</span>
@@ -2530,9 +2599,10 @@
           <li>Home widget opens the <em>setup modal</em>.</li>
           <li><em>Activity log</em> — see all agent runs; open a run's chat to continue the conversation.</li>
         </ul>
+        <span class="plan-connector wrap"><i data-lucide="corner-down-left" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M7</span>
           <span class="plan-title">Scheduling + external tools</span>
@@ -2541,9 +2611,10 @@
           <li>Users define <em>if &amp; when</em> their agents run.</li>
           <li>Users connect to their <em>external tools</em> from the chat modal.</li>
         </ul>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
+      <div class="plan-card flow-right">
         <div class="plan-head">
           <span class="plan-num">M8</span>
           <span class="plan-title">Magic moment</span>
@@ -2552,6 +2623,7 @@
           <li>On new agent creation, before the setup screen we show <em>"waiting… fetching… thinking…"</em>.</li>
           <li>During that wait, we fetch data to <em>pre-populate the agent's settings</em>.</li>
         </ul>
+        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
       <div class="plan-card">
