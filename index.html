@@ -1339,183 +1339,125 @@
     z-index: 3;
   }
 
-  /* Detailed milestones plan — 3 × 3 grid of compact cards */
-  .plan-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 14px;
-    margin-top: 18px;
-    flex: 1;
-    min-height: 0;
-  }
-  .plan-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px 13px;
-    box-shadow: 0 1px 3px rgba(15,40,80,0.04);
+  /* Detailed milestones plan — vertical stepper with one continuous rail */
+  .plan-track {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
+    margin-top: 14px;
+    flex: 1;
     min-height: 0;
-    overflow: hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    padding-left: 4px;
   }
-  .plan-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(15,40,80,0.06);
+  /* The continuous yellow rail behind all M# badges */
+  .plan-track::before {
+    content: '';
+    position: absolute;
+    left: 21px;
+    top: 18px;
+    bottom: 18px;
+    width: 2.5px;
+    background: linear-gradient(to bottom,
+      rgba(252,214,51,1) 0%,
+      rgba(252,214,51,0.55) 100%);
+    border-radius: 2px;
+    z-index: 0;
   }
-  .plan-card .plan-head {
+  .plan-step {
     display: flex;
-    align-items: center;
-    gap: 9px;
-    padding-bottom: 7px;
-    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+    padding: 4px 0;
   }
-  .plan-card .plan-num {
+  .plan-step .step-num {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    padding: 3px 8px;
-    border-radius: 5px;
+    width: 36px;
+    min-width: 36px;
+    height: 26px;
+    border-radius: 6px;
     background: var(--agent-yellow);
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 800;
-    letter-spacing: 0.06em;
     color: var(--ink);
+    letter-spacing: 0.04em;
+    box-shadow: 0 1px 2px rgba(212,170,0,0.3);
+    border: 2.5px solid var(--app-shell-bg);
+    position: relative;
+    z-index: 2;
+    margin-top: 1px;
     flex-shrink: 0;
-    box-shadow: 0 1px 1.5px rgba(0,0,0,0.06);
   }
-  .plan-card .plan-title {
-    font-size: 12px;
+  .plan-step .step-content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 1px;
+  }
+  .plan-step .step-title {
+    font-size: 12.5px;
     font-weight: 800;
     color: var(--ink-strong);
     letter-spacing: -0.005em;
+    margin: 0 0 3px;
     line-height: 1.25;
   }
-  .plan-card .plan-list {
+  .plan-step .step-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 1.5px;
   }
-  .plan-card .plan-list li {
+  .plan-step .step-list li {
     font-size: 10.5px;
     color: var(--ink);
     line-height: 1.4;
     padding-left: 10px;
     position: relative;
   }
-  .plan-card .plan-list li::before {
-    content: '';
+  .plan-step .step-list li::before {
+    content: '·';
     position: absolute;
-    left: 0;
-    top: 6px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--agent-yellow);
+    left: 1px;
+    top: -3px;
+    color: var(--agent-yellow);
+    font-weight: 900;
+    font-size: 16px;
   }
-  .plan-card .plan-list em {
+  .plan-step .step-list em {
     font-style: normal;
     font-weight: 700;
-    color: var(--ink-strong);
     background: rgba(252,214,51,0.32);
     padding: 0 3px;
     border-radius: 3px;
+    color: var(--ink-strong);
   }
-  .plan-card .plan-sub-label {
+  .plan-step .step-sub {
     display: inline-block;
-    align-self: flex-start;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: var(--chip);
     color: var(--muted);
-    margin-top: 2px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--chip);
+    margin-right: 5px;
+    vertical-align: 1px;
   }
-  .plan-card .plan-sub-label:first-of-type {
-    margin-top: 0;
-  }
-  .plan-card .plan-note {
+  .plan-step .step-note {
     font-size: 9.5px;
     font-style: italic;
     color: var(--muted-soft);
-    margin: 4px 0 0;
-    padding-left: 10px;
+    margin: 3px 0 0;
+    padding-left: 8px;
     border-left: 2px solid var(--border-strong);
-    line-height: 1.4;
-  }
-  /* Flow connectors between milestones — show one-after-another sequence */
-  .plan-card { position: relative; }
-  .plan-connector {
-    position: absolute;
-    z-index: 12;
-    pointer-events: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--app-shell-bg);
-    border: 1.5px solid var(--brand);
-    box-shadow: 0 1px 3px rgba(0,115,234,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .plan-connector .ic {
-    width: 13px;
-    height: 13px;
-    color: var(--brand);
-    stroke-width: 2.5;
-  }
-  .plan-connector.right {
-    right: -19px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .plan-connector.wrap {
-    right: -10px;
-    bottom: -19px;
-  }
-  /* Dashed connecting line in the gap between sequential cards */
-  .plan-card.flow-right::before {
-    content: '';
-    position: absolute;
-    right: -14px;
-    top: 50%;
-    width: 14px;
-    height: 1.5px;
-    background: repeating-linear-gradient(
-      to right,
-      rgba(0,115,234,0.4) 0,
-      rgba(0,115,234,0.4) 3px,
-      transparent 3px,
-      transparent 6px
-    );
-    z-index: 4;
-  }
-  .plan-card.flow-wrap::before {
-    content: '';
-    position: absolute;
-    bottom: -14px;
-    right: 10px;
-    width: 1.5px;
-    height: 14px;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(0,115,234,0.4) 0,
-      rgba(0,115,234,0.4) 3px,
-      transparent 3px,
-      transparent 6px
-    );
-    z-index: 4;
+    line-height: 1.35;
   }
 
 </style>
@@ -2517,123 +2459,105 @@
     </div>
     <h2 class="slide-title">Milestones · Build Plan</h2>
 
-    <div class="plan-grid">
+    <div class="plan-track">
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M1</span>
-          <span class="plan-title">Skeleton agents (in-memory)</span>
+      <div class="plan-step">
+        <span class="step-num">M1</span>
+        <div class="step-content">
+          <h3 class="step-title">Skeleton agents (in-memory)</h3>
+          <ul class="step-list">
+            <li>Agents <em>without tools</em> — ingest external context &amp; reason on top.</li>
+            <li><em>Temporary</em> UI to fetch, create &amp; run end-to-end.</li>
+            <li>Session traces in <em>langsmith</em>. Agents are <em>in-memory only</em> — no DB yet.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>Agents <em>without tools</em> — ingest external context &amp; reason on top.</li>
-          <li><em>Temporary</em> UI to fetch, create &amp; run end-to-end.</li>
-          <li>Session traces (logs) in <em>langsmith</em>.</li>
-          <li>Agents are <em>in-memory only</em> — no DB yet.</li>
-        </ul>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M2</span>
-          <span class="plan-title">Tools + DB persistence</span>
+      <div class="plan-step">
+        <span class="step-num">M2</span>
+        <div class="step-content">
+          <h3 class="step-title">Tools + DB persistence</h3>
+          <ul class="step-list">
+            <li>Agents gain the ability to <em>call tools</em> (tools must already be authenticated).</li>
+            <li>Agents are now <em>persisted in a database</em>.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>Agents gain the ability to <em>call tools</em> (tools must already be authenticated).</li>
-          <li>Agents are now <em>persisted in a database</em>.</li>
-        </ul>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-wrap">
-        <div class="plan-head">
-          <span class="plan-num">M3</span>
-          <span class="plan-title">Agents page &amp; chat shell</span>
+      <div class="plan-step">
+        <span class="step-num">M3</span>
+        <div class="step-content">
+          <h3 class="step-title">Agents page &amp; chat shell</h3>
+          <ul class="step-list">
+            <li><span class="step-sub">Agents page</span>Lists all agents · click → <em>agent home</em> (2 placeholder tabs) · initial chat entry point.</li>
+            <li><span class="step-sub">Chat</span>Create / edit agent settings in the modal <em>(no chat yet)</em> · Home widget opens the modal.</li>
+          </ul>
         </div>
-        <span class="plan-sub-label">Agents page</span>
-        <ul class="plan-list">
-          <li>Shows all agents the user has created.</li>
-          <li>Click an agent → <em>agent home</em> (two placeholder tabs).</li>
-          <li>Initial chat entry point.</li>
-        </ul>
-        <span class="plan-sub-label">Chat</span>
-        <ul class="plan-list">
-          <li>Create / edit agent settings in the chat modal <em>(no chat yet)</em>.</li>
-          <li>Home widget → opens the modal.</li>
-        </ul>
-        <span class="plan-connector wrap"><i data-lucide="corner-down-left" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M4</span>
-          <span class="plan-title">Agent home + read-only chat</span>
+      <div class="plan-step">
+        <span class="step-num">M4</span>
+        <div class="step-content">
+          <h3 class="step-title">Agent home + read-only chat</h3>
+          <ul class="step-list">
+            <li><em>Persona Teams</em> build their agent's home page.</li>
+            <li><em>Read-only chat</em> (session history) — text only.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li><em>Persona Teams</em> build their agent's home page.</li>
-          <li><em>Read-only chat</em> (session history) — text only.</li>
-        </ul>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M5</span>
-          <span class="plan-title">Live chat + tool UI</span>
+      <div class="plan-step">
+        <span class="step-num">M5</span>
+        <div class="step-content">
+          <h3 class="step-title">Live chat + tool UI</h3>
+          <ul class="step-list">
+            <li>Chat input to <em>converse with the agent</em> (agent doesn't yet edit its own settings).</li>
+            <li>Persona Teams ship UI for their tools (not connected yet). <em>TBD</em> if useful before the UI can actually be used.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>Chat input to <em>converse with the agent</em> (agent doesn't yet edit its own settings).</li>
-          <li>Persona Teams ship UI for their tools (not connected yet).</li>
-        </ul>
-        <p class="plan-note">TBD whether this makes sense before the UI can actually be used.</p>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-wrap">
-        <div class="plan-head">
-          <span class="plan-num">M6</span>
-          <span class="plan-title">Chat-driven editing + activity</span>
+      <div class="plan-step">
+        <span class="step-num">M6</span>
+        <div class="step-content">
+          <h3 class="step-title">Chat-driven editing + activity</h3>
+          <ul class="step-list">
+            <li>Chat can <em>edit the agent's settings</em>. Home widget opens the <em>setup modal</em>.</li>
+            <li><em>Activity log</em> — see all agent runs; open a run's chat to continue the conversation.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>Chat can <em>edit the agent's settings</em>.</li>
-          <li>Home widget opens the <em>setup modal</em>.</li>
-          <li><em>Activity log</em> — see all agent runs; open a run's chat to continue the conversation.</li>
-        </ul>
-        <span class="plan-connector wrap"><i data-lucide="corner-down-left" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M7</span>
-          <span class="plan-title">Scheduling + external tools</span>
+      <div class="plan-step">
+        <span class="step-num">M7</span>
+        <div class="step-content">
+          <h3 class="step-title">Scheduling + external tools</h3>
+          <ul class="step-list">
+            <li>Users define <em>if &amp; when</em> their agents run.</li>
+            <li>Users connect to their <em>external tools</em> from the chat modal.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>Users define <em>if &amp; when</em> their agents run.</li>
-          <li>Users connect to their <em>external tools</em> from the chat modal.</li>
-        </ul>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card flow-right">
-        <div class="plan-head">
-          <span class="plan-num">M8</span>
-          <span class="plan-title">Magic moment</span>
+      <div class="plan-step">
+        <span class="step-num">M8</span>
+        <div class="step-content">
+          <h3 class="step-title">Magic moment</h3>
+          <ul class="step-list">
+            <li>On new agent creation, before the setup screen we show <em>"waiting… fetching… thinking…"</em>.</li>
+            <li>During that wait, we fetch data to <em>pre-populate the agent's settings</em>.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li>On new agent creation, before the setup screen we show <em>"waiting… fetching… thinking…"</em>.</li>
-          <li>During that wait, we fetch data to <em>pre-populate the agent's settings</em>.</li>
-        </ul>
-        <span class="plan-connector right"><i data-lucide="arrow-right" class="ic"></i></span>
       </div>
 
-      <div class="plan-card">
-        <div class="plan-head">
-          <span class="plan-num">M9</span>
-          <span class="plan-title">Tool widgets in chat</span>
+      <div class="plan-step">
+        <span class="step-num">M9</span>
+        <div class="step-content">
+          <h3 class="step-title">Tool widgets in chat</h3>
+          <ul class="step-list">
+            <li><em>Custom widgets</em> render tool calls &amp; results inside the chat interface.</li>
+          </ul>
         </div>
-        <ul class="plan-list">
-          <li><em>Custom widgets</em> render tool calls &amp; results inside the chat interface.</li>
-        </ul>
       </div>
 
     </div>
