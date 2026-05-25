@@ -1339,71 +1339,94 @@
     z-index: 3;
   }
 
-  /* Detailed milestones plan — vertical stepper with one continuous rail */
+  /* Detailed milestones plan — vertical stepper, spacious + visual */
   .plan-track {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-top: 14px;
+    gap: 14px;
+    margin-top: 20px;
     flex: 1;
     min-height: 0;
     position: relative;
-    padding-left: 4px;
+    padding-left: 6px;
   }
   /* The continuous yellow rail behind all M# badges */
   .plan-track::before {
     content: '';
     position: absolute;
-    left: 21px;
-    top: 18px;
-    bottom: 18px;
-    width: 2.5px;
+    left: 33px;
+    top: 30px;
+    bottom: 30px;
+    width: 3px;
     background: linear-gradient(to bottom,
       rgba(252,214,51,1) 0%,
-      rgba(252,214,51,0.55) 100%);
-    border-radius: 2px;
+      rgba(252,214,51,0.6) 100%);
+    border-radius: 3px;
     z-index: 0;
   }
   .plan-step {
     display: flex;
     align-items: flex-start;
-    gap: 14px;
+    gap: 22px;
     position: relative;
     z-index: 1;
-    padding: 4px 0;
+    padding: 6px 0;
   }
   .plan-step .step-num {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    min-width: 36px;
-    height: 26px;
-    border-radius: 6px;
-    background: var(--agent-yellow);
-    font-size: 10.5px;
+    width: 54px;
+    min-width: 54px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--agent-yellow) 0%, rgba(252,214,51,0.85) 100%);
+    font-size: 15px;
     font-weight: 800;
     color: var(--ink);
     letter-spacing: 0.04em;
-    box-shadow: 0 1px 2px rgba(212,170,0,0.3);
-    border: 2.5px solid var(--app-shell-bg);
+    box-shadow: 0 2px 6px rgba(212,170,0,0.35), 0 1px 2px rgba(0,0,0,0.06);
+    border: 3px solid var(--app-shell-bg);
     position: relative;
     z-index: 2;
-    margin-top: 1px;
+    margin-top: 2px;
     flex-shrink: 0;
   }
   .plan-step .step-content {
     flex: 1;
     min-width: 0;
-    padding-top: 1px;
+    padding-top: 2px;
+  }
+  .plan-step .step-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 8px;
+  }
+  .plan-step .step-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(252,214,51,0.18);
+    border: 1px solid rgba(252,214,51,0.55);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .plan-step .step-icon .ic {
+    width: 17px;
+    height: 17px;
+    color: var(--ink-strong);
+    stroke-width: 2.2;
   }
   .plan-step .step-title {
-    font-size: 12.5px;
+    font-size: 18px;
     font-weight: 800;
     color: var(--ink-strong);
-    letter-spacing: -0.005em;
-    margin: 0 0 3px;
-    line-height: 1.25;
+    letter-spacing: -0.015em;
+    margin: 0;
+    line-height: 1.2;
   }
   .plan-step .step-list {
     list-style: none;
@@ -1411,53 +1434,76 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5px;
+    gap: 5px;
   }
   .plan-step .step-list li {
-    font-size: 10.5px;
+    font-size: 13.5px;
     color: var(--ink);
-    line-height: 1.4;
-    padding-left: 10px;
+    line-height: 1.5;
+    padding-left: 16px;
     position: relative;
   }
   .plan-step .step-list li::before {
-    content: '·';
+    content: '';
     position: absolute;
-    left: 1px;
-    top: -3px;
-    color: var(--agent-yellow);
-    font-weight: 900;
-    font-size: 16px;
+    left: 3px;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--agent-yellow);
+    box-shadow: 0 0 0 2px rgba(252,214,51,0.22);
   }
   .plan-step .step-list em {
     font-style: normal;
     font-weight: 700;
-    background: rgba(252,214,51,0.32);
-    padding: 0 3px;
-    border-radius: 3px;
+    background: rgba(252,214,51,0.38);
+    padding: 1px 4px;
+    border-radius: 4px;
     color: var(--ink-strong);
   }
   .plan-step .step-sub {
     display: inline-block;
-    font-size: 9px;
+    font-size: 10.5px;
     font-weight: 800;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    padding: 1px 5px;
-    border-radius: 3px;
+    padding: 2px 7px;
+    border-radius: 4px;
     background: var(--chip);
-    margin-right: 5px;
-    vertical-align: 1px;
+    margin-right: 8px;
+    vertical-align: 2px;
   }
-  .plan-step .step-note {
-    font-size: 9.5px;
-    font-style: italic;
-    color: var(--muted-soft);
-    margin: 3px 0 0;
-    padding-left: 8px;
-    border-left: 2px solid var(--border-strong);
-    line-height: 1.35;
+  /* Phase label that sits above the track on the split slides */
+  .plan-phase {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(252,214,51,0.18);
+    border: 1px solid rgba(252,214,51,0.55);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-strong);
+    align-self: flex-start;
+  }
+  .plan-phase .phase-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--agent-yellow);
+    box-shadow: 0 0 0 2.5px rgba(252,214,51,0.3);
+  }
+  .plan-phase .phase-meta {
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0;
+    text-transform: none;
   }
 
 </style>
@@ -1477,7 +1523,7 @@
         <span class="sep"></span>
         <span class="crumb">Agent Platform</span>
       </div>
-      <div class="page-num">01 / 12</div>
+      <div class="page-num">01 / 13</div>
     </div>
     <div class="title-wrap">
       <span class="title-tag">
@@ -1542,7 +1588,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 01 · Home Page</span>
       </div>
-      <div class="page-num">02 / 12</div>
+      <div class="page-num">02 / 13</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Home Page</span>
@@ -1657,7 +1703,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 01 · Home Page</span>
       </div>
-      <div class="page-num">03 / 12</div>
+      <div class="page-num">03 / 13</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Home Page</span>
@@ -1744,7 +1790,7 @@
         <span class="sep"></span>
         <span class="crumb">Onboarding · Build trust</span>
       </div>
-      <div class="page-num">04 / 12</div>
+      <div class="page-num">04 / 13</div>
     </div>
     <h2 class="slide-title">Reasoning &amp; Trust</h2>
     <p class="slide-sub">
@@ -1815,7 +1861,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 02 · Provisioning</span>
       </div>
-      <div class="page-num">05 / 12</div>
+      <div class="page-num">05 / 13</div>
     </div>
     <h2 class="slide-title">Creation &amp; Editing</h2>
     <p class="slide-sub">
@@ -1915,7 +1961,7 @@
         <span class="sep"></span>
         <span class="crumb">Surface 03 · Dedicated Hub</span>
       </div>
-      <div class="page-num">06 / 12</div>
+      <div class="page-num">06 / 13</div>
     </div>
     <h2 class="slide-title">Agent Page</h2>
     <p class="slide-sub">
@@ -1994,7 +2040,7 @@
         <span class="sep"></span>
         <span class="crumb">How runs start</span>
       </div>
-      <div class="page-num">07 / 12</div>
+      <div class="page-num">07 / 13</div>
     </div>
     <h2 class="slide-title">Triggers</h2>
     <p class="slide-sub">
@@ -2072,7 +2118,7 @@
         <span class="sep"></span>
         <span class="crumb">Summary · The contract</span>
       </div>
-      <div class="page-num">08 / 12</div>
+      <div class="page-num">08 / 13</div>
     </div>
     <div class="slide-title-row">
       <span class="pill-tag">Summary</span>
@@ -2146,7 +2192,7 @@
         <span class="sep"></span>
         <span class="crumb">Closing · Persona Teams checklist</span>
       </div>
-      <div class="page-num">09 / 12</div>
+      <div class="page-num">09 / 13</div>
     </div>
     <h2 class="slide-title">For every Persona Team</h2>
 
@@ -2172,7 +2218,7 @@
         <span class="sep"></span>
         <span class="crumb">Closing · The build sequence</span>
       </div>
-      <div class="page-num">10 / 12</div>
+      <div class="page-num">10 / 13</div>
     </div>
     <h2 class="slide-title">Milestones &amp; Dependencies</h2>
     <p class="slide-sub">
@@ -2369,7 +2415,7 @@
         <span>Agent Platform · monday CRM</span>
         <span class="crumb">Closing · Timeline</span>
       </div>
-      <div class="page-num">11 / 12</div>
+      <div class="page-num">11 / 13</div>
     </div>
     <h2 class="slide-title">Milestones Timeline</h2>
 
@@ -2447,24 +2493,32 @@
     </div>
   </section>
 
-  <!-- SLIDE 12 — Detailed milestones plan (9 steps, 3×3 grid) -->
+  <!-- SLIDE 12 — Build Plan, Part 1: Foundation (M1–M5) -->
   <section class="slide">
     <div class="topbar">
       <div class="brand">
         <div class="brand-mark"><i data-lucide="route" class="ic"></i></div>
         <span>Agent Platform · monday CRM</span>
-        <span class="crumb">Closing · 9-step build plan</span>
+        <span class="crumb">Closing · Build plan · Part 1</span>
       </div>
-      <div class="page-num">12 / 12</div>
+      <div class="page-num">12 / 13</div>
     </div>
     <h2 class="slide-title">Milestones · Build Plan</h2>
+    <div class="plan-phase">
+      <span class="phase-dot"></span>
+      <span>Phase 1 · Foundation</span>
+      <span class="phase-meta">M1 → M5</span>
+    </div>
 
     <div class="plan-track">
 
       <div class="plan-step">
         <span class="step-num">M1</span>
         <div class="step-content">
-          <h3 class="step-title">Skeleton agents (in-memory)</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="bot" class="ic"></i></span>
+            <h3 class="step-title">Skeleton agents (in-memory)</h3>
+          </div>
           <ul class="step-list">
             <li>Agents <em>without tools</em> — ingest external context &amp; reason on top.</li>
             <li><em>Temporary</em> UI to fetch, create &amp; run end-to-end.</li>
@@ -2476,7 +2530,10 @@
       <div class="plan-step">
         <span class="step-num">M2</span>
         <div class="step-content">
-          <h3 class="step-title">Tools + DB persistence</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="wrench" class="ic"></i></span>
+            <h3 class="step-title">Tools + DB persistence</h3>
+          </div>
           <ul class="step-list">
             <li>Agents gain the ability to <em>call tools</em> (tools must already be authenticated).</li>
             <li>Agents are now <em>persisted in a database</em>.</li>
@@ -2487,10 +2544,13 @@
       <div class="plan-step">
         <span class="step-num">M3</span>
         <div class="step-content">
-          <h3 class="step-title">Agents page &amp; chat shell</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="layout-list" class="ic"></i></span>
+            <h3 class="step-title">Agents page &amp; chat shell</h3>
+          </div>
           <ul class="step-list">
             <li><span class="step-sub">Agents page</span>Lists all agents · click → <em>agent home</em> (2 placeholder tabs) · initial chat entry point.</li>
-            <li><span class="step-sub">Chat</span>Create / edit agent settings in the modal <em>(no chat yet)</em> · Home widget opens the modal.</li>
+            <li><span class="step-sub">Chat</span>Create / edit settings in the modal <em>(no chat yet)</em> · Home widget opens the modal.</li>
           </ul>
         </div>
       </div>
@@ -2498,7 +2558,10 @@
       <div class="plan-step">
         <span class="step-num">M4</span>
         <div class="step-content">
-          <h3 class="step-title">Agent home + read-only chat</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="home" class="ic"></i></span>
+            <h3 class="step-title">Agent home + read-only chat</h3>
+          </div>
           <ul class="step-list">
             <li><em>Persona Teams</em> build their agent's home page.</li>
             <li><em>Read-only chat</em> (session history) — text only.</li>
@@ -2509,7 +2572,10 @@
       <div class="plan-step">
         <span class="step-num">M5</span>
         <div class="step-content">
-          <h3 class="step-title">Live chat + tool UI</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="messages-square" class="ic"></i></span>
+            <h3 class="step-title">Live chat + tool UI</h3>
+          </div>
           <ul class="step-list">
             <li>Chat input to <em>converse with the agent</em> (agent doesn't yet edit its own settings).</li>
             <li>Persona Teams ship UI for their tools (not connected yet). <em>TBD</em> if useful before the UI can actually be used.</li>
@@ -2517,10 +2583,35 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — Build Plan, Part 2: Polish & Magic (M6–M9) -->
+  <section class="slide">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="sparkles" class="ic"></i></div>
+        <span>Agent Platform · monday CRM</span>
+        <span class="crumb">Closing · Build plan · Part 2</span>
+      </div>
+      <div class="page-num">13 / 13</div>
+    </div>
+    <h2 class="slide-title">Milestones · Build Plan</h2>
+    <div class="plan-phase">
+      <span class="phase-dot"></span>
+      <span>Phase 2 · Polish &amp; Magic</span>
+      <span class="phase-meta">M6 → M9</span>
+    </div>
+
+    <div class="plan-track">
+
       <div class="plan-step">
         <span class="step-num">M6</span>
         <div class="step-content">
-          <h3 class="step-title">Chat-driven editing + activity</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="pencil-line" class="ic"></i></span>
+            <h3 class="step-title">Chat-driven editing + activity</h3>
+          </div>
           <ul class="step-list">
             <li>Chat can <em>edit the agent's settings</em>. Home widget opens the <em>setup modal</em>.</li>
             <li><em>Activity log</em> — see all agent runs; open a run's chat to continue the conversation.</li>
@@ -2531,7 +2622,10 @@
       <div class="plan-step">
         <span class="step-num">M7</span>
         <div class="step-content">
-          <h3 class="step-title">Scheduling + external tools</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="calendar-clock" class="ic"></i></span>
+            <h3 class="step-title">Scheduling + external tools</h3>
+          </div>
           <ul class="step-list">
             <li>Users define <em>if &amp; when</em> their agents run.</li>
             <li>Users connect to their <em>external tools</em> from the chat modal.</li>
@@ -2542,7 +2636,10 @@
       <div class="plan-step">
         <span class="step-num">M8</span>
         <div class="step-content">
-          <h3 class="step-title">Magic moment</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="sparkles" class="ic"></i></span>
+            <h3 class="step-title">Magic moment</h3>
+          </div>
           <ul class="step-list">
             <li>On new agent creation, before the setup screen we show <em>"waiting… fetching… thinking…"</em>.</li>
             <li>During that wait, we fetch data to <em>pre-populate the agent's settings</em>.</li>
@@ -2553,7 +2650,10 @@
       <div class="plan-step">
         <span class="step-num">M9</span>
         <div class="step-content">
-          <h3 class="step-title">Tool widgets in chat</h3>
+          <div class="step-head">
+            <span class="step-icon"><i data-lucide="layout-grid" class="ic"></i></span>
+            <h3 class="step-title">Tool widgets in chat</h3>
+          </div>
           <ul class="step-list">
             <li><em>Custom widgets</em> render tool calls &amp; results inside the chat interface.</li>
           </ul>
